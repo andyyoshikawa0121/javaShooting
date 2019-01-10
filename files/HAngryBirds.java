@@ -24,6 +24,7 @@ public class HAngryBirds extends JFrame{
 	public class MyJPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener{
 		Timer timer,timer2;
 		Image image,image2;
+		Image hitGif;
 		int my_x, my_y;
 		int mouse_x, mouse_y;
 		int start_x, start_y;
@@ -41,6 +42,7 @@ public class HAngryBirds extends JFrame{
 		int enemy_width;
 		int enemy_height;
 		int num_of_alive;
+		int setHit;
 
 
 
@@ -55,6 +57,9 @@ public class HAngryBirds extends JFrame{
 
 			ImageIcon icon2 = new ImageIcon("enemy2.png");
 			image2 = icon2.getImage();
+
+			ImageIcon icon3 = new ImageIcon("hit.gif");
+			hitGif = icon3.getImage();
 
 			my_width = image.getWidth(this);
 			my_height = image.getHeight(this);
@@ -74,6 +79,7 @@ public class HAngryBirds extends JFrame{
 
 			timer2 = new Timer(50,myTimerListener2);
 			timer2.start();
+			setHit = 0;
 
 
 			for(i=0;i<n/2;i++){
@@ -118,6 +124,8 @@ public class HAngryBirds extends JFrame{
 						if( ((my_x + my_width) > enemy_x[i] ) && (my_x < enemy_x[i] + enemy_width) && ( (my_y + my_height) > enemy_y[i]) && (my_y < (enemy_y[i] + enemy_height))){
 							enemy_alive[i] = 0;
 							num_of_alive --;
+							setHit = 1;
+							repaint();
 						}
 					}
 				}
@@ -158,6 +166,11 @@ public class HAngryBirds extends JFrame{
 			g.fillRect(95+my_width/2,400,10,100);
 			if(grab_flag==1){
 				g.drawLine(95+my_width/2,400,mouse_x,mouse_y);
+			}
+
+			if(setHit == 1){
+				g.drawImage(hitGif,my_x,my_y,this);
+				setHit = 0;
 			}
 		}
 
