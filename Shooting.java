@@ -6,7 +6,7 @@ import java.awt.Image;
 
 public class Shooting extends JFrame{
 	public Shooting(){
-		setSize(800,500);
+		setSize(500,800);
 		setTitle("Game Example");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		MyJPanel myJPanel= new MyJPanel();
@@ -21,7 +21,7 @@ public class Shooting extends JFrame{
 	implements ActionListener, MouseListener,
 	MouseMotionListener,KeyListener
 	{
-		int my_x;
+		int my_y;
 		int player_width,player_height;
 		int enemy_width,enemy_height;
 		int n;
@@ -38,12 +38,12 @@ public class Shooting extends JFrame{
 		int enemy_missile_move[];
 		int enemy_missile_flag[];
 		int flag;
-		public static final int MY_Y = 400;
+		public static final int MY_X = 400;
 		Image image,image2;
 		Timer timer;
 
 		public MyJPanel(){
-			my_x = 250;
+			my_y = 250;
 			missile_flag = 0;
 			flag = 0;
 			num_of_my_missile = 5;
@@ -65,12 +65,12 @@ public class Shooting extends JFrame{
 			enemy_missile_move = new int[n];
 
 			for(i=0;i<7;i++){
-				enemy_x[i] = 70*(i+1)-50;
-				enemy_y[i] = 50;
+				enemy_y[i] = 70*(i+1)-50;
+				enemy_x[i] = 50;
 			}
 			for(i=7;i<n;i++){
-				enemy_x[i] = 70*(i-5)-50;
-				enemy_y[i] = 100;
+				enemy_y[i] = 70*(i-5)-50;
+				enemy_x[i] = 100;
  			}
 			for(i=0;i<n;i++){
 				enemy_alive[i] = 1;
@@ -78,16 +78,16 @@ public class Shooting extends JFrame{
 			}
 
 			for(i=0;i<n;i++){
-				enemy_missile_x[i] = enemy_x[i] + enemy_width/2;
 				enemy_missile_y[i] = enemy_y[i] + enemy_height;
+				enemy_missile_x[i] = enemy_x[i] + enemy_width/2;
 				enemy_missile_move[i] = 10 + (i%3);
 				enemy_missile_flag[i] = 1;
 			}
 
-			ImageIcon icon = new ImageIcon("player.jpg");
+			ImageIcon icon = new ImageIcon("player_v.jpg");
 			image = icon.getImage();
 
-			ImageIcon icon2 = new ImageIcon("enemy.jpg");
+			ImageIcon icon2 = new ImageIcon("enemy_v.jpg");
 			image2 = icon2.getImage();
 
 			player_width = image.getWidth(this);
@@ -115,7 +115,7 @@ public class Shooting extends JFrame{
 
 		public void paintComponent(Graphics g){
 			super.paintComponent(g);
-			g.drawImage(image,my_x,400,this);
+			g.drawImage(image,400,my_y,this);
 			for(int i=0;i<n;i++){
 				if(enemy_alive[i] == 1){
 					g.drawImage(image2,enemy_x[i],enemy_y[i],this);
@@ -124,13 +124,13 @@ public class Shooting extends JFrame{
 			g.setColor(Color.white);
 			for(int i=0;i<missile_flag;i++){
 				for(int j=0;j<num_of_my_missile;j++){
-					g.fillRect(my_missile_x[i][j],my_missile_y[i][j],2,5);
+					g.fillRect(my_missile_x[i][j],my_missile_y[i][j],5,2);
 				}
 			}
 			for(int i=0;i<n;i++){
 				if(enemy_missile_flag[i] == 1){
 					g.setColor(Color.white);
-					g.fillRect(enemy_missile_x[i],enemy_missile_y[i],2,5);
+					g.fillRect(enemy_missile_x[i],enemy_missile_y[i],5,2);
 				}
 			}
 		}
@@ -139,29 +139,29 @@ public class Shooting extends JFrame{
 		public void actionPerformed(ActionEvent e){
 			Dimension dim = getSize();
 			for(int i=0;i<n;i++){
-				enemy_x[i] += enemy_move[i];
-				if( (enemy_x[i]<0) || (enemy_x[i] > (dim.width - enemy_width) ) ){
+				enemy_y[i] += enemy_move[i];
+				if( (enemy_y[i]<0) || (enemy_y[i] > (dim.height - enemy_height) ) ){
 					enemy_move[i] = -enemy_move[i];
 				}
 			}
 
 			for(int i=0;i<n;i++){
 				if(enemy_missile_flag[i] == 1){
-					enemy_missile_y[i] += enemy_missile_move[i];
-					if(enemy_missile_y[i] > 500){
+					enemy_missile_x[i] += enemy_missile_move[i];
+					if(enemy_missile_x[i] > 500){
 						enemy_missile_flag[i] = 0;
 					}
 				}else{
 					if(enemy_alive[i] == 1){
-						enemy_missile_x[i] = enemy_x[i] + enemy_width/2;
-						enemy_missile_y[i] = enemy_y[i] + enemy_height;
+						enemy_missile_y[i] = enemy_y[i] + enemy_height/2;
+						enemy_missile_x[i] = enemy_x[i] + enemy_width;
 						enemy_missile_flag[i] = 1;
 					}
 				}
 			}
 
 			for(int i=0;i<n;i++){
-				if(((enemy_missile_x[i]+2) >= my_x) && (enemy_missile_x[i] < my_x + player_width) && (enemy_missile_y[i] < (MY_Y + player_height)) && ((enemy_missile_y[i]+ 5) >= MY_Y)){
+				if(((enemy_missile_y[i]+2) >= my_y) && (enemy_missile_y[i] < my_y + player_height) && (enemy_missile_x[i] < (MY_X + player_width)) && ((enemy_missile_x[i]+ 5) >= MY_X)){
 					//========GameEnd=====
 					System.out.println("=======GameEnd=======");
 					System.exit(0);
@@ -171,12 +171,12 @@ public class Shooting extends JFrame{
 			if(missile_flag != 0){
 				for(int i=0;i<missile_flag;i++){
 					for(int j=0;j<num_of_my_missile;j++){
-						my_missile_y[i][j] -= 15;
+						my_missile_x[i][j] -= 15;
 					}
 				}
 				for(int i=0;i<missile_flag;i++){
 					for(int j=0;j<num_of_my_missile;j++){
-						if(0 > my_missile_y[i][j] && flag==0){
+						if(0 > my_missile_x[i][j] && flag==0){
 									missile_flag --;
 									swapArray(my_missile_x,my_missile_y,i,missile_flag);
 									flag = 1;
@@ -189,7 +189,7 @@ public class Shooting extends JFrame{
 					if(enemy_alive[i] == 1){
 						for(int k=0;k<missile_flag;k++){
 							for(int j=0;j<num_of_my_missile;j++){
-								if((enemy_x[i] - 2 <= my_missile_x[k][j]) && (enemy_x[i]+enemy_width > my_missile_x[k][j]) && (enemy_y[i] + enemy_height >= my_missile_y[k][j]) && enemy_y[i] < my_missile_y[k][j]+5){
+								if((enemy_y[i] - 2 <= my_missile_y[k][j]) && (enemy_y[i]+enemy_height > my_missile_y[k][j]) && (enemy_x[i] + enemy_width >= my_missile_x[k][j]) && enemy_x[i] < my_missile_x[k][j]+5){
 									if(missile_flag>0 && flag == 0){
 										enemy_alive[i] = 0;
 										missile_flag --;
@@ -229,25 +229,25 @@ public class Shooting extends JFrame{
 		public void keyPressed(KeyEvent e){
 			int key = e.getKeyCode();
 			switch(key){
-				case KeyEvent.VK_RIGHT:
-					if(my_x + 10 > 800){
-							my_x = my_x + 10 - 800;
+				case KeyEvent.VK_DOWN:
+					if(my_y + 10 > 800){
+							my_y = my_y + 10 - 800;
 					}else{
-							my_x = my_x + 10;
+							my_y = my_y + 10;
 					}
 					break;
-				case KeyEvent.VK_LEFT:
-					if(my_x - 10 < 0){
-							my_x = my_x - 10 + 800;
+				case KeyEvent.VK_UP:
+					if(my_y - 10 < 0){
+							my_y = my_y - 10 + 800;
 					}else{
-							my_x = my_x - 10;
+							my_y = my_y - 10;
 					}
 					break;
 				case KeyEvent.VK_X:
 					if(missile_flag < 5){
 						for(int i=0;i<num_of_my_missile;i++){
-							my_missile_x[missile_flag][i] = -(i-2)*10 + my_x + player_width / 2;
-							my_missile_y[missile_flag][i] = MY_Y;
+							my_missile_y[missile_flag][i] = -(i-2)*10 + my_y + player_height / 2;
+							my_missile_x[missile_flag][i] = MY_X;
 						}
 						missile_flag ++;
 					}
